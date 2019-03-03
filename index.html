@@ -21,6 +21,7 @@
 			<span>总分：{{score}}</span>
 		</div>
 		<button @click="editTitle">修改标题</button>
+		<button @dblclick="toGithub">双击跳转github</button>
 	</div>
 	<script type="text/javascript" src="./utils/common.js"></script>
 	<script type="text/javascript" src="./utils/mvvm.js"></script>
@@ -38,6 +39,7 @@
 				title: '',
 				name: '',
 				sex: '',
+				url: '',
 				born: 1996,
 				year: 2019,
 				study: {
@@ -56,12 +58,21 @@
 				},
 				gender(){
 					let sex = this.sex
-					return sex == 1 ? '男' : '女'
+					let map = {
+						'女': sex === 0,
+						'男': sex === 1,
+						'双性人': !isNaN(sex) && sex !== 0 && sex !== 1,
+						'外星人': isNaN(sex),
+					}
+					return Object.keys(map).find( key => map[key])
 				}
 			},
 			methods: {
 				editTitle(){
 					this.title = '随机数：' + Math.random() 
+				},
+				toGithub(){
+					location.href = this.url
 				}
 			},
 			beforeCreate(){
@@ -71,12 +82,18 @@
 			created(){
 				ajax('./static/userInfo.json')
 				.then( res => {
+					console.log(res)
+					res = JSON.parse(res)
 					this.name = res.name
 					this.sex = res.name
 				})
 				console.log(this)
 			},
 			beforeMount(){
+				ajax('./static/githubUrl.text')
+				.then( res => {
+					this.url = res
+				})
 				console.log(this)
 			},
 			mounted(){

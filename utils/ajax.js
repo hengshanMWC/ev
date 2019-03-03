@@ -4,7 +4,7 @@ function ajax(api, data = {}, method = 'GET'){
 		req.onreadystatechange = function(){
 			if(req.readyState === 4){
 				if(req.status === 200){
-					resolve(JSON.parse(req.responseText))
+					resolve(req.responseText)
 				} else {
 					reject(req.status)
 				}
