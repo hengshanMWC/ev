@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+	<div id="app">
+		<h3>我是标题---{{title}}（点击下方按钮改变标题）</h3>
+		<h4>{{name}}</h4>
+		<span>性别：{{gender}}</span>
+		<div>
+			<input v-model="born" type="number">
+			<input v-model="year" type="number">
+			<span>年龄：{{age}}</span>
+		</div>
+		<div>
+			<input v-model="study.chinese" type="number">
+			<input v-model="study.english" type="number">
+			<input v-model="study.math" type="number">
+			<span>总分：{{score}}</span>
+		</div>
+		<button @click="editTitle">修改标题</button>
+	</div>
+	<script type="text/javascript" src="./utils/common.js"></script>
+	<script type="text/javascript" src="./utils/mvvm.js"></script>
+	<script type="text/javascript" src="./lib/dep.js"></script>
+	<script type="text/javascript" src="./lib/watcher.js"></script>
+	<script type="text/javascript" src="./lib/observer.js"></script>
+	<script type="text/javascript" src="./lib/computed.js"></script>
+	<script type="text/javascript" src="./lib/compile.js"></script>
+	<script type="text/javascript" src="./lib/index.js"></script>
+	<script type="text/javascript" src="./utils/ajax.js"></script>
+	<script type="text/javascript">
+		const app = new VE({
+			el: '#app',
+			data: {
+				title: '',
+				name: '',
+				sex: '',
+				born: 1996,
+				year: 2019,
+				study: {
+					chinese: 100,
+					english: 100,
+					math: 100,
+				}
+			},
+			computed: {
+				age(){
+					return this.year - this.born
+				},
+				score(){
+					let study = this.study
+					return Object.keys(study).reduce((val, newKey) => val + Number(study[newKey]),0)
+				},
+				gender(){
+					let sex = this.sex
+					return sex == 1 ? '男' : '女'
+				}
+			},
+			methods: {
+				editTitle(){
+					this.title = '随机数：' + Math.random() 
+				}
+			},
+			beforeCreate(){
+				document.title = 'beforeCreate'
+				console.log(this)
+			},
+			created(){
+				ajax('./static/userInfo.json')
+				.then( res => {
+					this.name = res.name
+					this.sex = res.name
+				})
+				console.log(this)
+			},
+			beforeMount(){
+				console.log(this)
+			},
+			mounted(){
+				console.log(this)
+			},
+
+		})
+	</script>
+</body>
+</html>
